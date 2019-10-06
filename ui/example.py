@@ -2,12 +2,14 @@
 # -*- coding:utf-8 -*-
 import sys
 import os
-picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic')
+picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic/star-wars-icons')
 libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
 if os.path.exists(libdir):
     sys.path.append(libdir)
 
 import logging
+from os import listdir
+
 from waveshare_epd import epd2in13_V2
 import time
 from PIL import Image,ImageDraw,ImageFont
@@ -16,6 +18,8 @@ import traceback
 logging.basicConfig(level=logging.DEBUG)
 
 try:
+	pic_list = os.listdir(picdir)
+	print(pic_list)
     logging.info("epd2in13_V2 Demo")
 
     epd = epd2in13_V2.EPD()
@@ -47,37 +51,37 @@ try:
     time.sleep(2)
 
     # read bmp file
-    logging.info("2.read bmp file...")
-    image = Image.open(os.path.join(picdir, 'google.bmp'))
-    epd.display(epd.getbuffer(image))
-    time.sleep(2)
+    #logging.info("2.read bmp file...")
+    #image = Image.open(os.path.join(picdir, 'google.bmp'))
+    #epd.display(epd.getbuffer(image))
+    #time.sleep(2)
 
     # read bmp file on window
-    logging.info("3.read bmp file on window...")
+    #logging.info("3.read bmp file on window...")
     # epd.Clear(0xFF)
-    image1 = Image.new('1', (epd.height, epd.width), 255)  # 255: clear the frame
-    bmp = Image.open(os.path.join(picdir, '128.png'))
-    image1.paste(bmp, (2,2))
-    epd.display(epd.getbuffer(image1))
-    time.sleep(4)
+    #image1 = Image.new('1', (epd.height, epd.width), 255)  # 255: clear the frame
+    #bmp = Image.open(os.path.join(picdir, '128.png'))
+    #image1.paste(bmp, (2,2))
+    #epd.display(epd.getbuffer(image1))
+    #time.sleep(4)
 
     # # partial update
-    logging.info("4.show time...")
-    time_image = Image.new('1', (epd.height, epd.width), 255)
-    time_draw = ImageDraw.Draw(time_image)
+    logging.info("2. show star wars...")
+    sw_image = Image.new('1', (epd.height, epd.width), 255)
+    #sw_draw = ImageDraw.Draw(sw_image)
 
     epd.init(epd.FULL_UPDATE)
-    epd.displayPartBaseImage(epd.getbuffer(time_image))
+    epd.displayPartBaseImage(epd.getbuffer(sw_image))
 
     epd.init(epd.PART_UPDATE)
-    num = 0
-    while (True):
-        time_draw.rectangle((120, 80, 220, 105), fill = 255)
-        time_draw.text((120, 80), time.strftime('%H:%M:%S'), font = font24, fill = 0)
-        epd.displayPartial(epd.getbuffer(time_image))
-        num = num + 1
-        if(num == 10):
-            break
+    
+    for file_ in pic_list:
+        #time_draw.rectangle((120, 80, 220, 105), fill = 255)
+        #time_draw.text((120, 80), time.strftime('%H:%M:%S'), font = font24, fill = 0)
+		bmp = Image.open(file_);
+		sw_image.paste(bmp, (2,2))
+        epd.displayPartial(epd.getbuffer(sw_image))
+        time.sleep(2)
 
     logging.info("Clear...")
     epd.init(epd.FULL_UPDATE)
