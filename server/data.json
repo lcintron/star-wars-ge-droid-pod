@@ -1,0 +1,16 @@
+[  
+    {
+        "label": "R Unit",
+        "primaryIcon": "r2d2.bmp",
+        "secondaryIcon":"rebel.bmp",
+        "bleType":"DEVICE_EIRDATA",
+        "data":"02010609FF8301030444818201060944524F4944"
+    },
+    {
+        "label": "BB Unit",
+        "primaryIcon": "bb8.bmp",
+        "secondaryIcon":"rebel.bmp",
+        "bleType":"DEVICE_EIRDATA",
+        "data":"02010609FF8301030444818202060944524F4944"
+    }      
+]
