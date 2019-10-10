@@ -4,6 +4,7 @@
 # File: example.py
 # Description: display status on e-Paper display
 #----------------------------------------------------
+
 import sys
 import os
 picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic/star-wars-icons')
@@ -24,6 +25,7 @@ import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
 GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(15, GPIO.IN, pull_up_down=GPIO.PUD_UP) # Set pin 10 to be an input pin and set initial value to be pul
+
 #GPIO.setup(38, GPIO.IN, pull_up_down=GPIO.PUD_UP) # Set pin 10 to be an input pin and set initial value to be pul
 #GPIO.add_event_detect(38,GPIO.FALLING,callback=button_callback,bouncetime=500) # Setup event on pin 10 rising edg
 #logging.basicConfig(level=logging.DEBUG)
@@ -41,7 +43,6 @@ try:
     #image = Image.open(os.path.join(picdir, 'bb8.bmp'))
     #epd.display(epd.getbuffer(image))
     #time.sleep(5)
-
     ##partial update
 
     logging.info("1. show star wars...")
@@ -72,11 +73,13 @@ try:
         print("button-"+str(pic_id))
 
     GPIO.add_event_detect(15,GPIO.FALLING,callback=button_callback,bouncetime=1000) # Setup event on pin 10 rising edg
+    
     #logging.info("Clear...")
     #epd.init(epd.FULL_UPDATE)
     #epd.Clear(0xFF)
     #logging.info("Goto Sleep...")
     #epd.sleep()
+
     message = input("Press enter to quit\n\n") # Run until someone presses enter
 
 
