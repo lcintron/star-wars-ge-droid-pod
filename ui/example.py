@@ -66,14 +66,15 @@ try:
         file_ = pic_list[pic_id]
         bmp = Image.open(os.path.join(picdir,file_))
         sw_draw.rectangle((2,2,220,100), fill=255)
-        sw_draw.text((2,2), file_, font=font15, fill=0)
+        filename, fileextension = os.path.splitext(file_)
+        sw_draw.text((2,2), filename, font=font15, fill=0)
         sw_image.paste(bmp, (93,28))    #x,y (max x = 250, maxy = 120) : x_center = 250/2 - x_image/2
         epd.displayPartial(epd.getbuffer(sw_image))
         pic_id = (pic_id+1) if (pic_id+1) < len(pic_list) else 0 
 	print("button-"+str(pic_id))
 
-    GPIO.add_event_detect(15,GPIO.FALLING,callback=button_callback,bouncetime=10) # Setup event on pin 10 rising edg
-    GPIO.add_event_detect(20,GPIO.FALLING,callback=button_callback,bouncetime=10) # Setup event on pin 10 rising edg
+    GPIO.add_event_detect(15,GPIO.RISING,callback=button_callback,bouncetime=1100) # Setup event on pin 10 rising edg
+    GPIO.add_event_detect(20,GPIO.RISING,callback=button_callback,bouncetime=1100) # Setup event on pin 10 rising edg
     #logging.info("Clear...")
     #epd.init(epd.FULL_UPDATE)
     #epd.Clear(0xFF)
