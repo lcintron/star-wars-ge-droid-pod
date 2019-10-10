@@ -4,11 +4,10 @@
 # File: example.py
 # Description: display status on e-Paper display
 #----------------------------------------------------
-
 import sys
 import os
-picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'pic/star-wars-icons')
-libdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'lib')
+picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'star-wars-icons')
+libdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lib')
 pic_list = os.listdir(picdir)
 
 if os.path.exists(libdir):
@@ -20,32 +19,33 @@ from waveshare_epd import epd2in13_V2
 import time
 from PIL import Image,ImageDraw,ImageFont
 import traceback
-import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
+import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library 
 
 GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(15, GPIO.IN, pull_up_down=GPIO.PUD_UP) # Set pin 10 to be an input pin and set initial value to be pul
-
+GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_UP) # Set pin 10 to be an input pin and set initial value to be pul
 #GPIO.setup(38, GPIO.IN, pull_up_down=GPIO.PUD_UP) # Set pin 10 to be an input pin and set initial value to be pul
 #GPIO.add_event_detect(38,GPIO.FALLING,callback=button_callback,bouncetime=500) # Setup event on pin 10 rising edg
 #logging.basicConfig(level=logging.DEBUG)
 
 try:
-    print(pic_list)
-    logging.info("epd2in13_V2 Demo")
+    #print(pic_list)
+    #logging.info("epd2in13_V2 Demo")
     epd = epd2in13_V2.EPD()
     #logging.info("init and Clear")
     #epd.init(epd.FULL_UPDATE)
     #epd.Clear(0xFF)
-    font15 = ImageFont.truetype(os.path.join(picdir, '../Font.ttc'), 15)
+    font15 = ImageFont.truetype(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/Font.ttc'), 15)
 
     #logging.info("0. quick test")
     #image = Image.open(os.path.join(picdir, 'bb8.bmp'))
     #epd.display(epd.getbuffer(image))
     #time.sleep(5)
+
     ##partial update
 
-    logging.info("1. show star wars...")
+    #logging.info("1. show star wars...")
     sw_image = Image.new('1', (epd.height, epd.width), 255)
     sw_draw = ImageDraw.Draw(sw_image)
     epd.init(epd.FULL_UPDATE)
@@ -69,18 +69,17 @@ try:
         sw_draw.text((2,2), file_, font=font15, fill=0)
         sw_image.paste(bmp, (93,28))    #x,y (max x = 250, maxy = 120) : x_center = 250/2 - x_image/2
         epd.displayPartial(epd.getbuffer(sw_image))
-        pic_id = (pic_id+1) if (pic_id+1) < len(pic_list) else 0
-        print("button-"+str(pic_id))
+        pic_id = (pic_id+1) if (pic_id+1) < len(pic_list) else 0 
+	print("button-"+str(pic_id))
 
-    GPIO.add_event_detect(15,GPIO.FALLING,callback=button_callback,bouncetime=1000) # Setup event on pin 10 rising edg
-    
+    GPIO.add_event_detect(15,GPIO.FALLING,callback=button_callback,bouncetime=10) # Setup event on pin 10 rising edg
+    GPIO.add_event_detect(20,GPIO.FALLING,callback=button_callback,bouncetime=10) # Setup event on pin 10 rising edg
     #logging.info("Clear...")
     #epd.init(epd.FULL_UPDATE)
     #epd.Clear(0xFF)
     #logging.info("Goto Sleep...")
     #epd.sleep()
-
-    message = input("Press enter to quit\n\n") # Run until someone presses enter
+    message = input("Press enter to quit\n\n") # Run until someone presses enter                                                                                    
 
 
 except IOError as e:
