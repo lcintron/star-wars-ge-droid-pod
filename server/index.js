@@ -4,15 +4,7 @@ var BlenoPrimaryService = bleno.PrimaryService;
 
 const data = JSON.parse(fs.readFileSync('data.json'));
 let selectedDevice = data[0];
-let selectedDeviceId = 0;
-var droidDataPrefix = '03044481';
-var manufacturerId = '0183';
-var chips = {
-  R2: '8201',
-  BB: '8202',
-  Blue: '8A03'
-}
-
+let started = false;
 console.log('bleno - echo');
 
 bleno.on('stateChange', function (state) {
@@ -33,8 +25,9 @@ bleno.on('advertisingStart', function (error) {
 });
 
 function mockDevice(deviceInfo) {
-  bleno.stopAdvertising();
-  //let droidToAdvertise = { name: 'BB', id: droidDataPrefix + chips.BB, properties: ['notify', 'indicate'] }; let uuid = [manufacturerId, droidToAdvertise.id];
+  if(started)
+    bleno.stopAdvertising();
+  
   let advertisementData = Buffer.from(deviceInfo.data, 'hex');
   bleno.startAdvertisingWithEIRData(advertisementData);
 }
