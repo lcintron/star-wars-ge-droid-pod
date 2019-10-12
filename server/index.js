@@ -1,28 +1,16 @@
-const bleno = require('bleno');
+const express = require('express')
+var bleno = undefined;
 const fs = require('fs');
-var BlenoPrimaryService = bleno.PrimaryService;
 
 const data = JSON.parse(fs.readFileSync('data.json'));
 let selectedDevice = data[0];
 let started = false;
-console.log('bleno - echo');
 
-bleno.on('stateChange', function (state) {
-  console.log('on -> stateChange: ' + state);
-  if (state === 'poweredOn') {
-    mockDevice(selectedDevice);
-  } else {
-    bleno.stopAdvertising();
-  }
-});
+var app = express();
 
-bleno.on('advertisingStart', function (error) {
-  console.log('on -> advertisingStart: ' + (error ? 'error ' + error : 'success'));
+app.listen(3000, ()=>{console.log('server running')});
 
-  if (!error) {
-    console.log('advertising!');
-  }
-});
+
 
 function mockDevice(deviceInfo) {
   if(started)
@@ -44,3 +32,34 @@ function startAdvertisementCallback(error){
   else
     console.log('advertisment started sucessfully');
 }
+
+function startBleno(){
+	bleno = require('bleno');
+	var BlenoPrimaryService = bleno.PrimaryService;
+
+	bleno.on('stateChange', function (state) {
+	  console.log('on -> stateChange: ' + state);
+	  if (state === 'poweredOn') {
+	    mockDevice(selectedDevice);
+	  } else {
+	    bleno.stopAdvertising();
+	  }
+	});
+
+	bleno.on('advertisingStart', function (error) {
+	  console.log('on -> advertisingStart: ' + (error ? 'error ' + error : 'success'));
+	
+	  if (!error) {
+	    console.log('advertising!');
+	  }
+	});
+}
+
+app.get("/", (req, res, next) => {
+ res.json("ok");
+});
+
+app.get('/start', (req, res, next)=>{
+	startBleno();
+	res.json("ok");
+});
