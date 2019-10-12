@@ -40,6 +40,7 @@ try:
     #epd.init(epd.FULL_UPDATE)
     #epd.Clear(0xFF)
     font15 = ImageFont.truetype(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/Font.ttc'), 15)
+    fontStarWars = ImageFont.truetype(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/Starjhol.ttf'),30)
 
     #logging.info("0. quick test")
     #image = Image.open(os.path.join(picdir, 'bb8.bmp'))
@@ -47,7 +48,8 @@ try:
     #time.sleep(5)
 
     ##partial update
-
+    displayStartup()
+    
     #logging.info("1. show star wars...")
     sw_image = Image.new('1', (epd.height, epd.width), 255)
     sw_draw = ImageDraw.Draw(sw_image)
@@ -93,6 +95,13 @@ try:
     #logging.info("Goto Sleep...")
     #epd.sleep()
     message = input("Press enter to quit\n\n") # Run until someone presses enter                                                                                    
+
+def displayStartup():
+    sw_image = Image.new('1', (epd.height, epd.width), 255)
+    sw_draw = ImageDraw.Draw(sw_image)
+    sw_draw.rectangle((2,2,220,100), fill=255)
+    sw_draw.text((2,2), "Droid Pod", font=fontStarWars, fill=0)
+    epd.displayPartial(epd.getbuffer(sw_image))
 
 
 except IOError as e:
