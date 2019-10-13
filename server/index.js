@@ -4,7 +4,7 @@ const fs = require('fs');
 const jsend = require('./jsend');
 const data = JSON.parse(fs.readFileSync('data.json'));
 let selectedDevice = data[0];
-let started = false;
+let blenoInitialized = false;
 
 var app = express();
 
@@ -33,7 +33,8 @@ function startAdvertisementCallback(error) {
 
 function startBleno() {
 	bleno = require('bleno');
-	var BlenoPrimaryService = bleno.PrimaryService;
+	//var BlenoPrimaryService = bleno.PrimaryService;
+	blenoInitialized = true;
 
 	bleno.on('stateChange', function (state) {
 		console.log('on -> stateChange: ' + state);
@@ -53,15 +54,25 @@ function startBleno() {
 	});
 }
 
-app.get("/", (req, res, next) => {
-	let state = {};
-    
-	res.json("ok");
+function getState(){
+	let state = {
+		platform = bleno ? bleno.platform : 'unkown',
+		state = bleno ? bleno.state : 'uninitialized',
+		address = bleno ? bleno.address : 'unknown',
+		rssi = bleno ? bleno.rssi : 'unkown',
+		mtu = bleno ? bleno.mtu : 'unkown'
+	};
+	return state;
+}
+
+	let state = getState();	
+	res.json(jsend.returnSuccess(state));
 });
 
 app.get('/start', (req, res, next) => {
 	startBleno();
-	res.json("ok");
+	let state = getState();
+	res.json(jsend.returnSuccess(state));
 });
 
 app.get('/start', (req, res, next) => {
