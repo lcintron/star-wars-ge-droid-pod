@@ -1,17 +1,19 @@
 const express = require('express');
 var bleno = undefined;
 const fs = require('fs');
-const jsend = require('./jsend');
+const JSend = require('./jsend');
 const data = JSON.parse(fs.readFileSync('data.json'));
 let selectedDevice = data[0];
 let blenoInitialized = false;
-
+let jsend = new JSend();
+console.log(jsend);
+console.table(jsend);
 var app = express();
 
 app.listen(3000, () => { console.log('server running') });
 
 function mockDevice(deviceInfo) {
-	if (started)
+	if (blenoInitialized)
 		bleno.stopAdvertising();
 
 	let advertisementData = Buffer.from(deviceInfo.data, 'hex');
