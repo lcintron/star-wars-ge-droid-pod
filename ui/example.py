@@ -31,6 +31,28 @@ GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_UP) # Set pin 10 to be an input pi
 #GPIO.setup(38, GPIO.IN, pull_up_down=GPIO.PUD_UP) # Set pin 10 to be an input pin and set initial value to be pul
 #GPIO.add_event_detect(38,GPIO.FALLING,callback=button_callback,bouncetime=500) # Setup event on pin 10 rising edg
 #logging.basicConfig(level=logging.DEBUG)
+font15 = ImageFont.truetype(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/Font.ttc'), 15)
+fontStarWars = ImageFont.truetype(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/Starjhol.ttf'),30, encoding="unic")
+
+def displayStartup(epd):
+    count = 0
+    while True:
+        sw_image = Image.new('1', (epd.height, epd.width), 255)
+        sw_draw = ImageDraw.Draw(sw_image)
+        sw_draw.rectangle((2,2,220,100), fill=255)
+        sw_draw.text((25,30), "Droid Pod", font=fontStarWars, fill=0)
+        #sw_draw.text((75,68), "loading",font=font15, fill=0)
+        loadstr = count * "."
+        sw_draw.text((115,65), loadstr, font=font15, fill=0)
+        epd.displayPartial(epd.getbuffer(sw_image))
+
+        count =count +1
+        count = count%4
+        
+        print(loadstr)
+#        time.sleep(1) 
+
+
 
 try:
     #print(pic_list)
@@ -39,8 +61,6 @@ try:
     #logging.info("init and Clear")
     #epd.init(epd.FULL_UPDATE)
     #epd.Clear(0xFF)
-    font15 = ImageFont.truetype(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/Font.ttc'), 15)
-    fontStarWars = ImageFont.truetype(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/Starjhol.ttf'),30)
 
     #logging.info("0. quick test")
     #image = Image.open(os.path.join(picdir, 'bb8.bmp'))
@@ -48,7 +68,6 @@ try:
     #time.sleep(5)
 
     ##partial update
-    displayStartup()
     
     #logging.info("1. show star wars...")
     sw_image = Image.new('1', (epd.height, epd.width), 255)
@@ -56,6 +75,8 @@ try:
     epd.init(epd.FULL_UPDATE)
     epd.displayPartBaseImage(epd.getbuffer(sw_image))
     epd.init(epd.PART_UPDATE)
+
+    displayStartup(epd)
 
     # for file_ in pic_list:
     #     bmp = Image.open(os.path.join(picdir,file_))
@@ -95,13 +116,6 @@ try:
     #logging.info("Goto Sleep...")
     #epd.sleep()
     message = input("Press enter to quit\n\n") # Run until someone presses enter                                                                                    
-
-def displayStartup():
-    sw_image = Image.new('1', (epd.height, epd.width), 255)
-    sw_draw = ImageDraw.Draw(sw_image)
-    sw_draw.rectangle((2,2,220,100), fill=255)
-    sw_draw.text((2,2), "Droid Pod", font=fontStarWars, fill=0)
-    epd.displayPartial(epd.getbuffer(sw_image))
 
 
 except IOError as e:

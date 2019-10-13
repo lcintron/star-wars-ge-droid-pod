@@ -56,14 +56,16 @@ function startBleno() {
 
 function getState(){
 	let state = {
-		platform = bleno ? bleno.platform : 'unkown',
-		state = bleno ? bleno.state : 'uninitialized',
-		address = bleno ? bleno.address : 'unknown',
-		rssi = bleno ? bleno.rssi : 'unkown',
-		mtu = bleno ? bleno.mtu : 'unkown'
+		platform: bleno ? bleno.platform : 'unkown',
+		state : bleno ? bleno.state : 'uninitialized',
+		address : bleno ? bleno.address : 'unknown',
+		rssi: bleno ? bleno.rssi : 'unkown',
+		mtu: bleno ? bleno.mtu : 'unkown'
 	};
 	return state;
 }
+
+app.get('/', (req, res, next)=>{
 
 	let state = getState();	
 	res.json(jsend.returnSuccess(state));
@@ -75,7 +77,7 @@ app.get('/start', (req, res, next) => {
 	res.json(jsend.returnSuccess(state));
 });
 
-app.get('/start', (req, res, next) => {
-	startBleno();
+app.get('/error', (req, res, next) => {
+	//startBleno();
 	res.json("ok");
 });
