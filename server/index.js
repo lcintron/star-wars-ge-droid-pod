@@ -12,15 +12,24 @@ var app = express();
 app.listen(3000, () => { console.log('server running') });
 
 function AdvertiseWithEIRData(data, callback) {
-	if (blenoInitialized)
-		bleno.stopAdvertising();
+	if (blenoInitialized && bleno){
+		
+		bleno.stopAdvertising(function(){
+			console.log('starting ad after stop');
+			startAdvertisementWithData(data, callback);
+			
+		});
+		console.log('stopping adv');
+	}
 	
 	startBleno(function(){
-		let dataHex = Buffer.from(data, 'hex');
-		bleno.startAdvertisingWithEIRData(dataHex);
-		if(callback && typeof callback === "function")
-			callback()
+		startAdvertisementWithData(data,callback);
 	});
+}
+
+function startAdvertisementWithData(data,callback){
+	let dataHex = Buffer.from(data, 'hex');
+	bleno.startAdvertisingWithEIRData(dataHex,callback && typeof callback === "function"?callback:null);
 }
 
 function startAdvertisementCallback(error) {
@@ -31,26 +40,36 @@ function startAdvertisementCallback(error) {
 }
 
 function startBleno(callback) {
-	bleno = require('bleno');
-	var BlenoPrimaryService = bleno.PrimaryService;
-	blenoInitialized = true;
+	if(!blenoInitialized && bleno == undefined){
+		bleno = require('bleno');
+		let BlenoPrimaryService = bleno.PrimaryService;
+		blenoInitialized = true;
 
-	bleno.on('stateChange', function (state) {
-		console.log('on -> stateChange: ' + state);
-		if (state === 'poweredOn') {
-			callback();
-		} else {
-			bleno.stopAdvertising();
-		}
-	});
+		bleno.on('stateChange', function (state) {
+			console.log('on -> stateChange: ' + state);
+			if (state === 'poweredOn') {
+				callback();
+			} else {
+				bleno.stopAdvertising();
+			}
+		});
 
-	bleno.on('advertisingStart', function (error) {
-		console.log('on -> advertisingStart: ' + (error ? 'error ' + error : 'success'));
+		bleno.on('advertisingStart', function (error) {
+			console.log('on -> advertisingStart: ' + (error ? 'error ' + error : 'success'));
 
-		if (!error) {
-			console.log('advertising!');
-		}
-	});
+			if (!error) {
+				console.log('advertising!');
+			}
+		});
+
+		bleno.on('advertisingStop', function(error){
+			console.log('on -> advertisingStop: ' + (error? 'error ' + error: 'success'));
+			if(!error){
+				console.log('not advertising!');
+			}
+		});
+	}
+
 }
 
 function getState(){
