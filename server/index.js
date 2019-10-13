@@ -5,25 +5,22 @@ const JSend = require('./jsend');
 const data = JSON.parse(fs.readFileSync('data.json'));
 let selectedDevice = data[0];
 let blenoInitialized = false;
-let jsend = new JSend();
-console.log(jsend);
-console.table(jsend);
+const jsend = new JSend();
+
 var app = express();
 
 app.listen(3000, () => { console.log('server running') });
 
-function mockDevice(deviceInfo) {
+function AdvertiseWithEIRData(data, callback) {
 	if (blenoInitialized)
 		bleno.stopAdvertising();
-
-	let advertisementData = Buffer.from(deviceInfo.data, 'hex');
-	bleno.startAdvertisingWithEIRData(advertisementData);
-}
-
-function mockDeviceByIndex(index) {
-	selectedDevice = data[index];
-	selectedDeviceId = index;
-	mockDevice(selectedDevice);
+	
+	startBleno(function(){
+		let dataHex = Buffer.from(data, 'hex');
+		bleno.startAdvertisingWithEIRData(dataHex);
+		if(callback && typeof callback === "function")
+			callback()
+	});
 }
 
 function startAdvertisementCallback(error) {
@@ -33,15 +30,15 @@ function startAdvertisementCallback(error) {
 		console.log('advertisment started sucessfully');
 }
 
-function startBleno() {
+function startBleno(callback) {
 	bleno = require('bleno');
-	//var BlenoPrimaryService = bleno.PrimaryService;
+	var BlenoPrimaryService = bleno.PrimaryService;
 	blenoInitialized = true;
 
 	bleno.on('stateChange', function (state) {
 		console.log('on -> stateChange: ' + state);
 		if (state === 'poweredOn') {
-			mockDevice(selectedDevice);
+			callback();
 		} else {
 			bleno.stopAdvertising();
 		}
@@ -73,10 +70,17 @@ app.get('/', (req, res, next)=>{
 	res.json(jsend.returnSuccess(state));
 });
 
-app.get('/start', (req, res, next) => {
-	startBleno();
-	let state = getState();
-	res.json(jsend.returnSuccess(state));
+app.get('/start/EIRAdvertisement/:data', (req, res, next) => {
+	if(req.params.data){
+		console.log("received data to advertise: "+req.params.data);
+		AdvertiseWithEIRData(req.params.data, function(){
+			let state = getState();
+			res.json(jsend.returnSuccess(state));
+		});
+	}else{
+		res.json(jsend.returnFail("EIR Data (string) to advertise is required."));
+	}
+	
 });
 
 app.get('/error', (req, res, next) => {
