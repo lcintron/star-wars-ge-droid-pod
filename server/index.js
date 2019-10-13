@@ -1,108 +1,107 @@
 const express = require('express');
-var bleno = undefined;
-const fs = require('fs');
+const SimpleBleno = require('./simplebleno')();
 const JSend = require('./jsend');
-const data = JSON.parse(fs.readFileSync('data.json'));
-let selectedDevice = data[0];
-let blenoInitialized = false;
 const jsend = new JSend();
 
 var app = express();
-
+console.log(SimpleBleno);
 app.listen(3000, () => { console.log('server running') });
 
-function AdvertiseWithEIRData(data, callback) {
-	if (blenoInitialized && bleno){
-		
-		bleno.stopAdvertising(function(){
-			console.log('starting ad after stop');
-			startAdvertisementWithData(data, callback);
-			
-		});
-		console.log('stopping adv');
-	}
-	
-	startBleno(function(){
-		startAdvertisementWithData(data,callback);
-	});
-}
+// function AdvertiseWithEIRData(data, callback) {
+// 	if (blenoInitialized && bleno){
 
-function startAdvertisementWithData(data,callback){
-	let dataHex = Buffer.from(data, 'hex');
-	bleno.startAdvertisingWithEIRData(dataHex,callback && typeof callback === "function"?callback:null);
-}
+// 		bleno.stopAdvertising(function(){
+// 			console.log('starting ad after stop');
+// 			startAdvertisementWithData(data, callback);
 
-function startAdvertisementCallback(error) {
-	if (error)
-		console.error(error);
-	else
-		console.log('advertisment started sucessfully');
-}
+// 		});
+// 		console.log('stopping adv');
+// 	}
 
-function startBleno(callback) {
-	if(!blenoInitialized && bleno == undefined){
-		bleno = require('bleno');
-		let BlenoPrimaryService = bleno.PrimaryService;
-		blenoInitialized = true;
+// 	startBleno(function(){
+// 		startAdvertisementWithData(data,callback);
+// 	});
+// }
 
-		bleno.on('stateChange', function (state) {
-			console.log('on -> stateChange: ' + state);
-			if (state === 'poweredOn') {
-				callback();
-			} else {
-				bleno.stopAdvertising();
-			}
-		});
+// function startAdvertisementWithData(data,callback){
+// 	let dataHex = Buffer.from(data, 'hex');
+// 	bleno.startAdvertisingWithEIRData(dataHex,callback && typeof callback === "function"?callback:null);
+// }
 
-		bleno.on('advertisingStart', function (error) {
-			console.log('on -> advertisingStart: ' + (error ? 'error ' + error : 'success'));
+// function startAdvertisementCallback(error) {
+// 	if (error)
+// 		console.error(error);
+// 	else
+// 		console.log('advertisment started sucessfully');
+// }
 
-			if (!error) {
-				console.log('advertising!');
-			}
-		});
+// function startBleno(callback) {
+// 	if(!blenoInitialized && bleno == undefined){
+// 		bleno = require('bleno');
+// 		let BlenoPrimaryService = bleno.PrimaryService;
+// 		blenoInitialized = true;
 
-		bleno.on('advertisingStop', function(error){
-			console.log('on -> advertisingStop: ' + (error? 'error ' + error: 'success'));
-			if(!error){
-				console.log('not advertising!');
-			}
-		});
-	}
+// 		bleno.on('stateChange', function (state) {
+// 			console.log('on -> stateChange: ' + state);
+// 			if (state === 'poweredOn') {
+// 				callback();
+// 			} else {
+// 				bleno.stopAdvertising();
+// 			}
+// 		});
 
-}
+// 		bleno.on('advertisingStart', function (error) {
+// 			console.log('on -> advertisingStart: ' + (error ? 'error ' + error : 'success'));
 
-function getState(){
-	let state = {
-		platform: bleno ? bleno.platform : 'unkown',
-		state : bleno ? bleno.state : 'uninitialized',
-		address : bleno ? bleno.address : 'unknown',
-		rssi: bleno ? bleno.rssi : 'unkown',
-		mtu: bleno ? bleno.mtu : 'unkown'
-	};
-	return state;
-}
+// 			if (!error) {
+// 				console.log('advertising!');
+// 			}
+// 		});
 
-app.get('/', (req, res, next)=>{
+// 		bleno.on('advertisingStop', function(error){
+// 			console.log('on -> advertisingStop: ' + (error? 'error ' + error: 'success'));
+// 			if(!error){
+// 				console.log('not advertising!');
+// 			}
+// 		});
+// 	}
 
-	let state = getState();	
+// }
+
+// function getState() {
+// 	let state = {
+// 		platform: bleno ? bleno.platform : 'unkown',
+// 		state: bleno ? bleno.state : 'uninitialized',
+// 		address: bleno ? bleno.address : 'unknown',
+// 		rssi: bleno ? bleno.rssi : 'unkown',
+// 		mtu: bleno ? bleno.mtu : 'unkown'
+// 	};
+// 	return state;
+// }
+
+app.get('/', (req, res, next) => {
+	let state = SimpleBleno.getState();
 	res.json(jsend.returnSuccess(state));
 });
 
 app.get('/start/EIRAdvertisement/:data', (req, res, next) => {
-	if(req.params.data){
-		console.log("received data to advertise: "+req.params.data);
-		AdvertiseWithEIRData(req.params.data, function(){
-			let state = getState();
-			res.json(jsend.returnSuccess(state));
+	if (req.params.data) {
+		console.log("received data to advertise: " + req.params.data);
+		SimpleBleno.AdvertiseWithEIRData(req.params.data, function (error) {
+			if (error) {
+				res.json(jsend.returnError(error));
+			} else {
+				let state = getState();
+				res.json(jsend.returnSuccess(state));
+			}
 		});
-	}else{
+	} else {
 		res.json(jsend.returnFail("EIR Data (string) to advertise is required."));
 	}
-	
+
 });
 
-app.get('/error', (req, res, next) => {
+app.get('/stop', (req, res, next) => {
 	//startBleno();
 	res.json("ok");
 });
