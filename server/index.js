@@ -1,7 +1,7 @@
-const express = require('express')
+const express = require('express');
 var bleno = undefined;
 const fs = require('fs');
-
+const jsend = require('./jsend');
 const data = JSON.parse(fs.readFileSync('data.json'));
 let selectedDevice = data[0];
 let started = false;
@@ -54,6 +54,13 @@ function startBleno() {
 }
 
 app.get("/", (req, res, next) => {
+	let state = {};
+    
+	res.json("ok");
+});
+
+app.get('/start', (req, res, next) => {
+	startBleno();
 	res.json("ok");
 });
 
