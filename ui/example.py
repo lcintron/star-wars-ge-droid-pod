@@ -6,6 +6,8 @@
 #----------------------------------------------------
 import sys
 import os
+import json
+
 picdir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'star-wars-icons')
 libdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lib')
 pic_list = os.listdir(picdir)
@@ -24,6 +26,9 @@ import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
 iconsdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'icons')
 icons = os.listdir(iconsdir)
 
+with open('data.json', 'r') as datafile:
+    data = json.load(file)
+
 GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(15, GPIO.IN, pull_up_down=GPIO.PUD_UP) # Set pin 10 to be an input pin and set initial value to be pul
@@ -36,7 +41,7 @@ fontStarWars = ImageFont.truetype(os.path.join(os.path.dirname(os.path.realpath(
 
 def displayStartup(epd):
     count = 0
-    while True:
+    for i in range (6):
         sw_image = Image.new('1', (epd.height, epd.width), 255)
         sw_draw = ImageDraw.Draw(sw_image)
         sw_draw.rectangle((2,2,220,100), fill=255)
@@ -91,22 +96,22 @@ try:
     def button_callback(channel):
         global pic_id
         global icon_id
-        file_ = pic_list[pic_id]
-        bmp = Image.open(os.path.join(picdir,file_))
+        file_ = data[pic_id]
+        bmp = Image.open(os.path.join(picdir,file_['primaryIcon']))
         sw_draw.rectangle((2,2,220,100), fill=255)
-        filename, fileextension = os.path.splitext(file_)
-        sw_draw.text((2,2), filename, font=font15, fill=0)
+        #filename, fileextension = os.path.splitext(file_)
+        sw_draw.text((2,2), file_['label'], font=font15, fill=0)
         sw_image.paste(bmp, (93,28))    #x,y (max x = 250, maxy = 120) : x_center = 250/2 - x_image/2
 
-	icon = Image.open(os.path.join(iconsdir, icons[icon_id]))
+	    icon = Image.open(os.path.join(iconsdir, icons[icon_id]))
         sw_image.paste(icon, (250-18, 4))
 
         epd.displayPartial(epd.getbuffer(sw_image))
-        pic_id = (pic_id+1) if (pic_id+1) < len(pic_list) else 0 
+        pic_id = (pic_id+1) if (pic_id+1) < len(data) else 0 
         icon_id = (icon_id+1) if (icon_id+1) < len(icons) else 0
 	
         
-	print("button-"+str(pic_id))
+	    print("button-"+str(pic_id))
 
     GPIO.add_event_detect(15,GPIO.RISING,callback=button_callback,bouncetime=1100) # Setup event on pin 10 rising edg
     GPIO.add_event_detect(20,GPIO.RISING,callback=button_callback,bouncetime=1100) # Setup event on pin 10 rising edg
