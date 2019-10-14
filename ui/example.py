@@ -3,6 +3,12 @@
 # File: example.py
 # Description: display status on e-Paper display
 #----------------------------------------------------
+import sys
+import os
+
+libdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lib')
+if os.path.exists(libdir):
+    sys.path.append(libdir)
 
 from PIL import Image, ImageDraw, ImageFont
 import RPi.GPIO as GPIO  # Import Raspberry Pi GPIO library
@@ -13,12 +19,6 @@ import logging
 import json
 import requests
 from waveshare_epd import epd2in13_V2
-import sys
-import os
-
-libdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'lib')
-if os.path.exists(libdir):
-    sys.path.append(libdir)
 
 
 picdir = os.path.join(os.path.dirname(os.path.dirname(
@@ -79,7 +79,9 @@ def broadcastSelectedDevice(deviceToBroadcast):
     
     if response:
         bleStatus = response.json()
-        if bleStatus['status'] is "success" and bleStatus['data']['advertising']:
+        print(bleStatus['status'])
+        print((bleStatus['data'])['advertising'])
+        if bleStatus['status'] == "success" and (bleStatus['data'])['advertising']:
             drawSelectedDeviceStatus(deviceToBroadcast, True)
         else:
             logging.info('unable to broadcast' + dataToBroadcast)
@@ -94,7 +96,7 @@ def drawSelectedDeviceStatus(deviceToBroadcast, isAdvertising):
         # x,y (max x = 250, maxy = 120) : x_center = 250/2 - x_image/2
         sw_image.paste(bmp, (93, 28))
         icon = Image.open(os.path.join(
-            iconsdir, icons[1 if isAdvertising else 0]))
+            iconsdir, icons[0 if isAdvertising else 1]))
         sw_image.paste(icon, (250-18, 4))
         epd.displayPartial(epd.getbuffer(sw_image))
 
@@ -112,6 +114,7 @@ def button_callback(channel):
 
         deviceToBroadcast = data[selected_device]
         drawSelectedDeviceStatus(deviceToBroadcast, False)
+        broadcastSelectedDevice(deviceToBroadcast)
 
 
 try:
