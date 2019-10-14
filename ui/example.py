@@ -37,6 +37,9 @@ GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_UP) # Set pin 10 to be an input pi
 logging.basicConfig(level=logging.DEBUG)
 font15 = ImageFont.truetype(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/Font.ttc'), 15)
 fontStarWars = ImageFont.truetype(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/Starjhol.ttf'),30, encoding="unic")
+pic_id = -1
+icon_id = 0
+epd = False
 
 def displayStartup(epd):
     count = 0
@@ -59,39 +62,10 @@ def displayStartup(epd):
         count = count%4        
         logging.info(loadstr)
 
-
-
-try:
-    #print(pic_list)
-    #logging.info("epd2in13_V2 Demo")
-    epd = epd2in13_V2.EPD()
-    logging.info("init and Clear")
-    epd.init(epd.FULL_UPDATE)
-    epd.Clear(0xFF)
-
-    #logging.info("0. quick test")
-    #image = Image.open(os.path.join(picdir, 'bb8.bmp'))
-    #epd.display(epd.getbuffer(image))
-    #time.sleep(5)
-
-    ##partial update
-    
-    #logging.info("1. show star wars...")
-    sw_image = Image.new('1', (epd.height, epd.width), 255)
-    sw_draw = ImageDraw.Draw(sw_image)
-    epd.init(epd.FULL_UPDATE)
-    epd.displayPartBaseImage(epd.getbuffer(sw_image))
-    epd.init(epd.PART_UPDATE)
-
-    displayStartup(epd)
-    button_callback(0)
-    pic_id = -1
-    icon_id = 0
-
-    def button_callback(channel):
+def button_callback(channel):
         global pic_id
         global icon_id
-        if channel == 20:
+        if channel == 20 or channel == 0:
         	pic_id = (pic_id+1) if (pic_id+1) < len(data) else 0 
         	icon_id = (icon_id+1) if (icon_id+1) < len(icons) else 0
         elif channel == 15:
@@ -107,7 +81,19 @@ try:
         sw_image.paste(icon, (250-18, 4))
 
         epd.displayPartial(epd.getbuffer(sw_image))
-	        
+
+try:
+    epd = epd2in13_V2.EPD()
+    sw_image = Image.new('1', (epd.height, epd.width), 255)
+    sw_draw = ImageDraw.Draw(sw_image)
+    epd.init(epd.FULL_UPDATE)
+    epd.displayPartBaseImage(epd.getbuffer(sw_image))
+    epd.init(epd.PART_UPDATE)
+
+    displayStartup(epd)
+    button_callback(0)
+
+    
     GPIO.add_event_detect(15,GPIO.RISING,callback=button_callback,bouncetime=1100) # Setup event on pin 10 rising edg
     GPIO.add_event_detect(20,GPIO.RISING,callback=button_callback,bouncetime=1100) # Setup event on pin 10 rising edg
     message = input("Press enter to quit\n\n") # Run until someone presses enter                                                                                    
