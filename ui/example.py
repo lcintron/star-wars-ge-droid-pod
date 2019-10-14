@@ -27,7 +27,7 @@ iconsdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'icons')
 icons = os.listdir(iconsdir)
 
 with open('data.json', 'r') as datafile:
-    data = json.load(file)
+    data = json.load(datafile)
 
 GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BCM)
@@ -44,7 +44,7 @@ def displayStartup(epd):
     for i in range (6):
         sw_image = Image.new('1', (epd.height, epd.width), 255)
         sw_draw = ImageDraw.Draw(sw_image)
-        sw_draw.rectangle((2,2,220,100), fill=255)
+        sw_draw.rectangle((0,0,250,122), fill=255)
         sw_draw.text((25,30), "Droid Pod", font=fontStarWars, fill=0)
         #sw_draw.text((75,68), "loading",font=font15, fill=0)
         loadstr = count * "."
@@ -83,36 +83,28 @@ try:
 
     displayStartup(epd)
 
-    # for file_ in pic_list:
-    #     bmp = Image.open(os.path.join(picdir,file_))
-    #     sw_draw.rectangle((2,2,220,100), fill=255)
-    #     sw_draw.text((2,2), file_, font=font15, fill=0)
-    #     sw_image.paste(bmp, (20,20))
-    #     epd.displayPartial(epd.getbuffer(sw_image))
-    #     time.sleep(8)
-
-    pic_id = 0
+    pic_id = -1
     icon_id = 0
     def button_callback(channel):
         global pic_id
         global icon_id
+        if channel == 20:
+        	pic_id = (pic_id+1) if (pic_id+1) < len(data) else 0 
+        	icon_id = (icon_id+1) if (icon_id+1) < len(icons) else 0
+        elif channel == 15:
+                pic_id = (pic_id-1) if (pic_id-1) > -1 else  (len(data)-1)
+
         file_ = data[pic_id]
         bmp = Image.open(os.path.join(picdir,file_['primaryIcon']))
-        sw_draw.rectangle((2,2,220,100), fill=255)
-        #filename, fileextension = os.path.splitext(file_)
+        sw_draw.rectangle((0,0,250,120), fill=255)
         sw_draw.text((2,2), file_['label'], font=font15, fill=0)
         sw_image.paste(bmp, (93,28))    #x,y (max x = 250, maxy = 120) : x_center = 250/2 - x_image/2
 
-	    icon = Image.open(os.path.join(iconsdir, icons[icon_id]))
+        icon = Image.open(os.path.join(iconsdir, icons[icon_id]))
         sw_image.paste(icon, (250-18, 4))
 
         epd.displayPartial(epd.getbuffer(sw_image))
-        pic_id = (pic_id+1) if (pic_id+1) < len(data) else 0 
-        icon_id = (icon_id+1) if (icon_id+1) < len(icons) else 0
-	
-        
-	    print("button-"+str(pic_id))
-
+	        
     GPIO.add_event_detect(15,GPIO.RISING,callback=button_callback,bouncetime=1100) # Setup event on pin 10 rising edg
     GPIO.add_event_detect(20,GPIO.RISING,callback=button_callback,bouncetime=1100) # Setup event on pin 10 rising edg
     #logging.info("Clear...")
