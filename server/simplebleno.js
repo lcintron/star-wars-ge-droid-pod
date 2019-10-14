@@ -1,13 +1,15 @@
-function SimpleBleno {
-
+function SimpleBleno() {
     this.bleno = null;
     this.blenoPrimaryService = null;
 
-    function startAdvertisementWithData(data, callback) {
-        let dataHex = Buffer.from(data, 'hex');
-        this.bleno.startAdvertisingWithEIRData(dataHex, callback && typeof callback === "function" ? callback : null);
-    }
 }
+
+SimpleBleno.prototype.startAdvertisementWithData = function(data, callback) {
+       if(bleno){
+		let dataHex = Buffer.from(data, 'hex');
+        	this.bleno.startAdvertisingWithEIRData(dataHex, callback && typeof callback === "function" ? callback : null);
+	}
+};
 
 SimpleBleno.prototype.start = function (callback) {
     this.bleno = require('bleno');
@@ -37,10 +39,10 @@ SimpleBleno.prototype.start = function (callback) {
             console.log('stopped advertising');
         }
     });
-}
+};
 
 SimpleBleno.prototype.advertiseWithEIRData = function (data, callback) {
-    stopAdvertisement(function (error) {
+    this.stopAdvertisement(function (error) {
         if (error)
             callback(error);
         else {
@@ -49,12 +51,10 @@ SimpleBleno.prototype.advertiseWithEIRData = function (data, callback) {
         }
     });
 
-    startBleno(function () {
+    this.start(function () {
         this.startAdvertisementWithData(data, callback);
     });
-}
-
-
+};
 
 
 SimpleBleno.prototype.getState = function () {
@@ -66,15 +66,15 @@ SimpleBleno.prototype.getState = function () {
         mtu: this.bleno ? bleno.mtu : 'unkown'
     };
     return state;
-}
+};
 
-SimpleBleno.prototype.stopAvertisement = function (callback) {
+SimpleBleno.prototype.stopAdvertisement = function (callback) {
     if (this.bleno) {
         this.bleno.stopAdvertising(callback);
     } else {
         callback();
     }
-}
+};
 
 
-module.export = SimpleBleno;
+module.exports = SimpleBleno;

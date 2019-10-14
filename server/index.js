@@ -1,10 +1,11 @@
 const express = require('express');
-const SimpleBleno = require('./simplebleno')();
+var SimpleBleno = require('./simplebleno');
 const JSend = require('./jsend');
 const jsend = new JSend();
-
-var app = express();
 console.log(SimpleBleno);
+const simpleBleno = new SimpleBleno();
+var app = express();
+console.log(simpleBleno);
 app.listen(3000, () => { console.log('server running') });
 
 // function AdvertiseWithEIRData(data, callback) {
@@ -80,14 +81,14 @@ app.listen(3000, () => { console.log('server running') });
 // }
 
 app.get('/', (req, res, next) => {
-	let state = SimpleBleno.getState();
+	let state = simpleBleno.getState();
 	res.json(jsend.returnSuccess(state));
 });
 
 app.get('/start/EIRAdvertisement/:data', (req, res, next) => {
 	if (req.params.data) {
 		console.log("received data to advertise: " + req.params.data);
-		SimpleBleno.AdvertiseWithEIRData(req.params.data, function (error) {
+		simpleBleno.advertiseWithEIRData(req.params.data, function (error) {
 			if (error) {
 				res.json(jsend.returnError(error));
 			} else {
