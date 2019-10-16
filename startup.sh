@@ -1,13 +1,14 @@
 #!/bin/bash
 
-sleep 20
+#sleep 20
 
-cd ./ui
+cd ./server
 
-python example.py > ui.log &
+/usr/local/bin/node index.js &
 
-cd ../server
+cd ../ui
 
-node index.js > server.log &
+python example.py
+
 
 

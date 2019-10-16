@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#i!/usr/bin/python
 #----------------------------------------------------
 # File: example.py
 # Description: display status on e-Paper display
@@ -20,9 +20,9 @@ import json
 import requests
 from waveshare_epd import epd2in13_V2
 
+logging.basicConfig(filename='pod-ui.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
-picdir = os.path.join(os.path.dirname(os.path.dirname(
-    os.path.realpath(__file__))), 'star-wars-icons')
+picdir = os.path.join(os.path.dirname(os.path.dirname( os.path.realpath(__file__))), 'star-wars-icons')
 iconsdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'icons')
 icons = os.listdir(iconsdir)
 URL = 'http://localhost:3000'
@@ -36,7 +36,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(15, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 # Set pin 10 to be an input pin and set initial value to be pul
 GPIO.setup(20, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 font15 = ImageFont.truetype(os.path.join(os.path.dirname(
     os.path.realpath(__file__)), 'fonts/Font.ttc'), 15)
 fontStarWars = ImageFont.truetype(os.path.join(os.path.dirname(
@@ -53,7 +53,7 @@ def displayStartup(epd):
         r = False
         try:
             r = requests.get(URL, timeout=0.5)
-        except requests.exceptions.Timeout as e:
+	except requests.exceptions.RequestException as e:
             r = False
 
         serverReady = True if r else False
@@ -74,13 +74,11 @@ def broadcastSelectedDevice(deviceToBroadcast):
     response = False
     try:
         response = requests.get(URL+'/start/EIRAdvertisement/'+dataToBroadcast, timeout=0.5)
-    except requests.exceptions.Timeout as e:
+    except requests.exceptions.RequestException as e:
         response = False
     
     if response:
         bleStatus = response.json()
-        print(bleStatus['status'])
-        print((bleStatus['data'])['advertising'])
         if bleStatus['status'] == "success" and (bleStatus['data'])['advertising']:
             drawSelectedDeviceStatus(deviceToBroadcast, True)
         else:
@@ -135,7 +133,10 @@ try:
     GPIO.add_event_detect(
         20, GPIO.RISING, callback=button_callback, bouncetime=1100)
     # Run until someone presses enter
-    message = input("Press enter to quit\n\n")
+    sys.stdin = open('/dev/tty')
+    print "Press ctrl + c to quit."
+    while True:
+        m = raw_input()
 
 except IOError as e:
     logging.info(e)
