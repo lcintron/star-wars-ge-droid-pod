@@ -59,7 +59,7 @@ def displayStartup(epd):
         serverReady = True if r else False
         sw_image = Image.new('1', (epd.height, epd.width), 255)
         sw_draw = ImageDraw.Draw(sw_image)
-        sw_draw.rectangle((0, 0, 250, 122), fill=255)
+        sw_draw.rectangle((0, 0, 122, 250), fill=255)
         sw_draw.text((25, 30), "Droid Pod", font=fontStarWars, fill=0)
         loadstr = count * "."
         sw_draw.text((115, 65), loadstr, font=font15, fill=0)
@@ -89,7 +89,7 @@ def broadcastSelectedDevice(deviceToBroadcast):
 def drawSelectedDeviceStatus(deviceToBroadcast, isAdvertising):
         bmp = Image.open(os.path.join(
             picdir, deviceToBroadcast['primaryIcon']))
-        sw_draw.rectangle((0, 0, 250, 120), fill=255)
+        sw_draw.rectangle((0, 0, 120, 250), fill=255)
         sw_draw.text((2, 2), deviceToBroadcast['label'], font=font15, fill=0)
         # x,y (max x = 250, maxy = 120) : x_center = 250/2 - x_image/2
         sw_image.paste(bmp, (93, 28))
@@ -126,12 +126,12 @@ try:
     displayStartup(epd)
     button_callback(0)
 
-    # Setup event on pin 10 rising edg
-    GPIO.add_event_detect(
-        15, GPIO.RISING, callback=button_callback, bouncetime=1100)
-    # Setup event on pin 10 rising edg
-    GPIO.add_event_detect(
-        20, GPIO.RISING, callback=button_callback, bouncetime=1100)
+    # Setup event on pin 15 rising edg
+    GPIO.add_event_detect(15, GPIO.RISING, callback=button_callback, bouncetime=1500)
+    
+    # Setup event on pin 20 rising edg
+    GPIO.add_event_detect(20, GPIO.RISING, callback=button_callback, bouncetime=1500)
+    
     # Run until someone presses enter
     sys.stdin = open('/dev/tty')
     print "Press ctrl + c to quit."
