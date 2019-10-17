@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#sleep 20
+sleep 20
 
 cd ./server
 
@@ -8,7 +8,7 @@ cd ./server
 
 cd ../ui
 
-python example.py
+python main.py
 
 
 
