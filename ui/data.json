@@ -78,7 +78,7 @@
     },
 	{
         "label": "Dok-Ondar's",
-        "primaryIcon": "saber.bmp",
+        "primaryIcon": "holocron.bmp",
         "secondaryIcon": "saber.bmp",
         "bleType": "DEVICE_EIRDATA",
         "data": "02010609FF83010a040302a601060944524F4944"
