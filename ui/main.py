@@ -19,6 +19,7 @@ import logging
 import json
 import requests
 from waveshare_epd import epd2in13_V2
+from pod.buttonhandler import ButtonHandler
 
 logging.basicConfig(filename='pod-ui.log', filemode='w',level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
 
