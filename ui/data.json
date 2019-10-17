@@ -71,8 +71,8 @@
     },
 	{
         "label": "Marketplace",
-        "primaryIcon": "resistance.bmp",
-        "secondaryIcon": "resistance.bmp",
+        "primaryIcon": "rebel.bmp",
+        "secondaryIcon": "rebel.bmp",
         "bleType": "DEVICE_EIRDATA",
         "data": "02010609FF83010a040302a601060944524F4944"
     },
