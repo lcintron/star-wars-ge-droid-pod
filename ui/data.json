@@ -18,55 +18,69 @@
         "primaryIcon": "rebel.bmp",
         "secondaryIcon": "rebel.bmp",
         "bleType": "DEVICE_EIRDATA",
-        "data": "02010609FF8301030444818202060944524F4944"
+        "data": "02010609FF8301030444818A03060944524F4944"
     },
     {
         "label": "Gray Chip",
         "primaryIcon": "smuggler.bmp",
         "secondaryIcon": "rebel.bmp",
         "bleType": "DEVICE_EIRDATA",
-        "data": "02010609FF8301030444818202060944524F4944"
+        "data": "02010609FF8301030444818204060944524F4944"
     },
     {
         "label": "Red Chip",
         "primaryIcon": "firstorder.bmp",
         "secondaryIcon": "firstorder.bmp",
         "bleType": "DEVICE_EIRDATA",
-        "data": "02010609FF8301030444818202060944524F4944"
+        "data": "02010609FF8301030444819205060944524F4944"
     },
     {
         "label": "Orange Chip",
         "primaryIcon": "firstorder.bmp",
         "secondaryIcon": "firstorder.bmp",
         "bleType": "DEVICE_EIRDATA",
-        "data": "02010609FF8301030444818202060944524F4944"
+        "data": "02010609FF8301030444818A06060944524F4944"
     },
     {
         "label": "Purple Chip",
         "primaryIcon": "smuggler.bmp",
         "secondaryIcon": "rebel.bmp",
         "bleType": "DEVICE_EIRDATA",
-        "data": "02010609FF8301030444818202060944524F4944"
+        "data": "02010609FF8301030444818207060944524F4944"
     },
     {
         "label": "Black Chip",
         "primaryIcon": "firstorder.bmp",
         "secondaryIcon": "firstorder.bmp",
         "bleType": "DEVICE_EIRDATA",
-        "data": "02010609FF8301030444818202060944524F4944"
+        "data": "02010609FF8301030444819208060944524F4944"
     },
     {
         "label": "Resistance Area",
         "primaryIcon": "rebel.bmp",
         "secondaryIcon": "rebel.bmp",
         "bleType": "DEVICE_EIRDATA",
-        "data": "02010609FF8301030444818202060944524F4944"
+        "data": "02010609FF83010a040102a601060944524F4944"
     },
     {
         "label": "First Order Area",
         "primaryIcon": "firstorder.bmp",
         "secondaryIcon": "firstorder.bmp",
         "bleType": "DEVICE_EIRDATA",
-        "data": "02010609FF8301030444818202060944524F4944"
+        "data": "02010609FF83010a040702a601060944524F4944"
+    },
+	{
+        "label": "Marketplace",
+        "primaryIcon": "resistance.bmp",
+        "secondaryIcon": "resistance.bmp",
+        "bleType": "DEVICE_EIRDATA",
+        "data": "02010609FF83010a040302a601060944524F4944"
+    },
+	{
+        "label": "Dok-Ondar's",
+        "primaryIcon": "saber.bmp",
+        "secondaryIcon": "saber.bmp",
+        "bleType": "DEVICE_EIRDATA",
+        "data": "02010609FF83010a040302a601060944524F4944"
     }
 ]
