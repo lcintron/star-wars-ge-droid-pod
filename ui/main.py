@@ -100,6 +100,7 @@ def drawSelectedDeviceStatus(deviceToBroadcast, isAdvertising):
 
 
 def button_callback(channel):
+	time.sleep(.20)
         global selected_device
         global icon_id
         if channel == 20 or channel == 0:
@@ -127,10 +128,10 @@ try:
     button_callback(0)
 
     # Setup event on pin 15 rising edg
-    GPIO.add_event_detect(15, GPIO.RISING, callback=button_callback, bouncetime=1500)
+    GPIO.add_event_detect(15, GPIO.RISING, callback=button_callback, bouncetime=200)
     
     # Setup event on pin 20 rising edg
-    GPIO.add_event_detect(20, GPIO.RISING, callback=button_callback, bouncetime=1500)
+    GPIO.add_event_detect(20, GPIO.RISING, callback=button_callback, bouncetime=200)
     
     # Run until someone presses enter
     sys.stdin = open('/dev/tty')
