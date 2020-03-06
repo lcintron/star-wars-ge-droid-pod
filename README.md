@@ -19,7 +19,7 @@ sudo systemctl disable bluetooth
 
 3. Install NodeJS
 ~~~
-sudp install -g n
+sudo npm install -g n
 sudo n 9
 sudo ln -s /usr/local/n/versions/node/9.11.2/ /usr/bin/node` 
 sudo setcap cap_net_raw+eip $(eval readlink -f `which node`)
