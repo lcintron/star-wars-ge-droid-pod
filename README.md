@@ -1,6 +1,17 @@
 # star-wars-ge-droid-pod
+Turn your Raspberry Pi Zero into beacons from *Disney Star Wars: Galaxy's Edge* park and watch your custom built *Droid Depot* droids react.
 
-## Setup
+## Hardware Requirements
+-  Raspberrry Pi Zero W 
+-  Waveshare 2.13in e-Paper Display Hat
+-  (2) Tactile Push Button
+
+## Hardware Setup
+
+1. Wire or solder the tactile push buttons to pins 15 and 20 (& GND). These will be pulled-up.
+2. Install e-Paper display to GPIO header.
+
+## Software Setup
 Execute the following in a terminal:
 
 1.  Update OS and install dependencies
@@ -37,5 +48,15 @@ sudo make install
 ~~~
 
 ## Deploy
+1.  Navigate to the cloned repository's server directory and run:
+```npm install```
+2.  Go back to the root of the repository's folder and run:
+``` chmod +x startup.sh``` and simply call the script ```./startup.sh``` to execute. 
+
 
 ## Run on Boot
+
+To execute the application everytime the Pi is turned on, add the following line to your ```/etc/rc.local``` file right before the ```exit 0``` line:
+~~~
+/home/pi/star-wars-ge-droid-pod/startup.sh &
+~~~
