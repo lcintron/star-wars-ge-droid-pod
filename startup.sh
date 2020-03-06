@@ -1,14 +1,8 @@
 #!/bin/bash
 
-sleep 20
+/usr/local/bin/node /home/pi/star-wars-ge-droid-pod/server/index.js &
 
-cd ./server
-
-/usr/local/bin/node index.js &
-
-cd ../ui
-
-python main.py
+python /home/pi/star-wars-ge-droid-pod/ui/main.py
 
 
 

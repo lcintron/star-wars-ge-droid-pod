@@ -11,7 +11,7 @@ if os.path.exists(libdir):
     sys.path.append(libdir)
 
 from PIL import Image, ImageDraw, ImageFont
-import RPi.GPIO as GPIO  # Import Raspberry Pi GPIO library
+import RPi.GPIO as GPIO 
 import traceback
 import time
 from os import listdir
@@ -19,16 +19,17 @@ import logging
 import json
 import requests
 from waveshare_epd import epd2in13_V2
-from pod.buttonhandler import ButtonHandler
 
-logging.basicConfig(filename='pod-ui.log', filemode='w',level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
+logfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'ui.log')
+logging.basicConfig(filename=logfile, filemode='w',level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
 
 picdir = os.path.join(os.path.dirname(os.path.dirname( os.path.realpath(__file__))), 'star-wars-icons')
 iconsdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'icons')
+datafile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'data.json')
 icons = os.listdir(iconsdir)
 URL = 'http://localhost:3000'
 
-with open('data.json', 'r') as datafile:
+with open(datafile, 'r') as datafile:
     data = json.load(datafile)
 
 GPIO.setwarnings(False)  # Ignore warning for now
@@ -134,11 +135,13 @@ try:
     # Setup event on pin 20 rising edg
     GPIO.add_event_detect(20, GPIO.RISING, callback=button_callback, bouncetime=200)
     
-    # Run until someone presses enter
-    sys.stdin = open('/dev/tty')
+    # Run until ctrl+c  interrupt received
     print "Press ctrl + c to quit."
     while True:
-        m = raw_input()
+	try:
+        	m = raw_input()
+	except:
+		time.sleep(10)
 
 except IOError as e:
     logging.info(e)
@@ -149,3 +152,7 @@ except KeyboardInterrupt:
     epd.Clear(0xFF)
     epd2in13_V2.epdconfig.module_exit()
     exit()
+
+except:
+    e = sys.exc_info()[0]
+    logging.warning(e)
