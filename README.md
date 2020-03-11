@@ -60,3 +60,8 @@ To execute the application everytime the Pi is turned on, add the following line
 ~~~
 /home/pi/star-wars-ge-droid-pod/startup.sh &
 ~~~
+
+
+## Video
+
+[![Alt text](https://i.ytimg.com/vi/qy_UUQxIx-M/hqdefault.jpg)](https://www.youtube.com/watch?v=qy_UUQxIx-M)
