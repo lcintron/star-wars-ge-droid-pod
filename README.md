@@ -1,5 +1,5 @@
 # star-wars-ge-droid-pod
-Turn your Raspberry Pi Zero into beacons from *Disney Star Wars: Galaxy's Edge* park and watch your custom built *Droid Depot* droids react (just like they do at the Park!.
+Turn your Raspberry Pi Zero into beacons from *Disney Star Wars: Galaxy's Edge* park and watch your custom built *Droid Depot* droids react! (just like they do at the park)
 
 ## Hardware Requirements
 -  Raspberrry Pi Zero W 
